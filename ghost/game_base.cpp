@@ -1394,7 +1394,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		SendChat( player, "www.facebook.com/Wuttinunt.ch" );
 		SendChat( player, "Server @D701" );
 		SendChat( player, "==============================================" );
-		SendChat( player, "Owner is " +m_OwnerName );
+		//SendChat( player, "Owner is " +m_OwnerName );
 
 		if( !m_HCLCommandString.empty( ) )
 			SendChat( player, "     HCL Command String:  " + m_HCLCommandString );
@@ -1461,14 +1461,15 @@ void CBaseGame :: SendEndMessage( )
 
 void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 {
+	
+	CONSOLE_Print( "[GAME: " + m_GameName + "] deleting player [" + player->GetName( ) + "]: " + player->GetLeftReason( ) );
+
+	//SendAllChat when Owner Left Game
 	if(player->GetName( ) == m_OwnerName){
 
-		//WWWWWWW
-		SendAllChat("Owner "+m_OwnerName+ " left the game.");
+	SendAllChat("Owner >>> "+m_OwnerName+" <<< Left Game" + player->GetName( ));
 
 	}
-
-	CONSOLE_Print( "[GAME: " + m_GameName + "] deleting player [" + player->GetName( ) + "]: " + player->GetLeftReason( ) );
 
 	// remove any queued spoofcheck messages for this player
 
@@ -1696,14 +1697,7 @@ void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinPlayer *joinPlayer )
 {
-	if(joinPlayer->GetName( ) == m_OwnerName){
-
-		//WWWWWWW
-		SendAllChat("Owner "+m_OwnerName+ " joined the game.");
-
-	}
-	
-	
+		
 	// check if the new player's name is empty or too long
 
 	if( joinPlayer->GetName( ).empty( ) || joinPlayer->GetName( ).size( ) > 15 )
@@ -2101,6 +2095,14 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// send a welcome message
 
 	SendWelcomeMessage( Player );
+
+
+	//SendAllChat When Owner Joined Game
+	if(joinPlayer->GetName( ) == m_OwnerName){
+
+	SendAllChat("Owner >>> "+m_OwnerName+" <<< Joined Game" );
+
+	}
 
 	// if spoof checks are required and we won't automatically spoof check this player then tell them how to spoof check
 	// e.g. if automatic spoof checks are disabled, or if automatic spoof checks are done on admins only and this player isn't an admin
